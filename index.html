@@ -101,8 +101,8 @@
     
     <!-- UI Overlay Banner -->
     <div id="ui-overlay">
-      <button class="party-btn" onclick="triggerPartyPopper()">🎉 Press 'C' or Click for Party Popper!</button>
-      <div class="hint-text">Click and Drag to Rotate Medal</div>
+      <button class="party-btn" onclick="triggerPartyPopper()">Congratulation parnika </button>
+      <div class="hint-text">You've secured an 2nd award in overall performance </div>
     </div>
 
     <a-scene environment="preset: contact; lighting: none; shadow: false;">
@@ -117,16 +117,16 @@
       <a-light type="ambient" color="#FFF" intensity="0.4"></a-light>
       
       <!-- 1. Top White Light -->
-      <a-light type="directional" color="#FFFFFF" intensity="1.5" position="0 6 1"></a-light>
+      <a-light type="directional" color="#FFFFFF" intensity="3.5" position="0 2 1"></a-light>
       
       <!-- 2. Front White Light -->
-      <a-light type="directional" color="#FFFFFF" intensity="1.2" position="0 1.6 4"></a-light>
+      <a-light type="directional" color="#FFFFFF" intensity="3.2" position="0 1.6 4"></a-light>
       
       <!-- 3. Left-Front White Light -->
-      <a-light type="directional" color="#FFFFFF" intensity="1.2" position="-4 2 3"></a-light>
+      <a-light type="directional" color="#FFFFFF" intensity="3.2" position="-4 2 3"></a-light>
 
       <!-- 4. Right-Front White Light -->
-      <a-light type="directional" color="#FFFFFF" intensity="1.2" position="4 2 3"></a-light>
+      <a-light type="directional" color="#FFFFFF" intensity="3.2" position="4 2 3"></a-light>
 
       <!-- Camera positioned to view extra-large centered medal -->
       <a-entity position="0 1.6 4.5">
@@ -149,7 +149,7 @@
           id="medal-disc"
           geometry="radius: 0.65; height: 0.1;"
           rotation="90 0 0" 
-          material="color: #FFD700; metalness: 0.9; roughness: 0.15;"
+          material="color: #A9A9A9; metalness: 0.9; roughness: 0.15;"
           position="0 0.25 0">
         </a-cylinder>
 
@@ -158,11 +158,12 @@
           geometry="radius: 0.38;"
           material="src: #star-icon; transparent: true; color: #DAA520; metalness: 0.8; roughness: 0.2;"
           position="0 0.25 0.052">
+          
         </a-circle>
         
         <!-- Text on Medal -->
-        <a-text value="AWARD" color="#5c440a" align="center" width="2.0" position="0 0.52 0.052" font="exo2bold"></a-text>
-        <a-text value="Nº 1" color="#5c440a" align="center" width="2.5" position="0 0.02 0.052" font="exo2bold"></a-text>
+        <a-text value="2nd Prize" color="#5c440a" align="center" width="2.0" position="0 0.52 0.052" font="exo2bold"></a-text>
+        <a-text value="parnika" color="#5c440a" align="center" width="2.5" position="0 0.02 0.052" font="exo2bold"></a-text>
 
         <!-- Connector Loop -->
         <a-torus 
