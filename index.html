@@ -2,8 +2,8 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Interactive 3D Medal - Scaled Up with Custom Lighting</title>
-    <meta name="description" content="A-Frame Interactive Golden Medal - Larger Size">
+    <title>Interactive 3D Medal - Extra Large with Party Popper</title>
+    <meta name="description" content="A-Frame Interactive Golden Medal with Party Popper Effect">
     
     <!-- Include A-Frame Library -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
@@ -19,12 +19,10 @@
           this.x_cord = 0;
           this.y_cord = 0;
           
-          // Bind event listeners to the canvas
           document.addEventListener('mousedown', this.OnMouseDown.bind(this));
           document.addEventListener('mouseup', this.OnMouseUp.bind(this));
           document.addEventListener('mousemove', this.OnMouseMove.bind(this));
           
-          // Touch support for mobile
           document.addEventListener('touchstart', this.OnMouseDown.bind(this));
           document.addEventListener('touchend', this.OnMouseUp.bind(this));
           document.addEventListener('touchmove', this.OnMouseMove.bind(this));
@@ -61,26 +59,50 @@
     </script>
     
     <style>
-      #instructions {
+      #ui-overlay {
         position: absolute;
-        bottom: 20px;
+        top: 20px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 100;
-        font-family: sans-serif;
-        background: rgba(0,0,0,0.6);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 20px;
-        pointer-events: none;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         text-align: center;
+        pointer-events: none;
+      }
+      .party-btn {
+        pointer-events: auto;
+        background: linear-gradient(135deg, #FFD700, #FF4500);
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 30px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        transition: transform 0.1s ease;
+      }
+      .party-btn:active {
+        transform: scale(0.95);
+      }
+      .hint-text {
+        color: #333;
+        background: rgba(255, 255, 255, 0.85);
+        padding: 6px 14px;
+        border-radius: 15px;
+        margin-top: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       }
     </style>
   </head>
   <body>
     
-    <div id="instructions">
-      Click and Drag to Rotate the Medal
+    <!-- UI Overlay Banner -->
+    <div id="ui-overlay">
+      <button class="party-btn" onclick="triggerPartyPopper()">🎉 Press 'C' or Click for Party Popper!</button>
+      <div class="hint-text">Click and Drag to Rotate Medal</div>
     </div>
 
     <a-scene environment="preset: contact; lighting: none; shadow: false;">
@@ -94,25 +116,28 @@
       <!-- Base Ambient Light -->
       <a-light type="ambient" color="#FFF" intensity="0.4"></a-light>
       
-      <!-- Top White Light -->
-      <a-light type="directional" color="#FFFFFF" intensity="1.5" position="0 5 1"></a-light>
+      <!-- 1. Top White Light -->
+      <a-light type="directional" color="#FFFFFF" intensity="1.5" position="0 6 1"></a-light>
       
-      <!-- Front White Light (positioned with camera view facing medal front) -->
-      <a-light type="directional" color="#FFFFFF" intensity="1.2" position="0 1.6 3"></a-light>
+      <!-- 2. Front White Light -->
+      <a-light type="directional" color="#FFFFFF" intensity="1.2" position="0 1.6 4"></a-light>
       
-      <!-- Fill light for golden glow -->
-      <a-light type="directional" color="#FFD700" intensity="0.5" position="-2 -1 1"></a-light>
+      <!-- 3. Left-Front White Light -->
+      <a-light type="directional" color="#FFFFFF" intensity="1.2" position="-4 2 3"></a-light>
 
-      <!-- Camera centered on target object position -->
-      <a-entity position="0 1.6 3.5">
+      <!-- 4. Right-Front White Light -->
+      <a-light type="directional" color="#FFFFFF" intensity="1.2" position="4 2 3"></a-light>
+
+      <!-- Camera positioned to view extra-large centered medal -->
+      <a-entity position="0 1.6 4.5">
         <a-camera look-controls="enabled: false" wasd-controls="enabled: false"></a-camera>
       </a-entity>
 
       <!-- 
         INTERACTIVE MEDAL GROUP
-        Scaled up to 1.5x size for high visibility
+        Scaled up significantly to 2.2x size
       -->
-      <a-entity id="medal-group" position="0 1.6 0" scale="1.5 1.5 1.5" mouse-rotate="speed: 0.5">
+      <a-entity id="medal-group" position="0 1.6 0" scale="2.2 2.2 2.2" mouse-rotate="speed: 0.5">
         
         <!-- THE RIBBON -->
         <a-mixin id="ribbon-mat" material="color: #153a7a; roughness: 0.8; metalness: 0; side: double"></a-mixin>
@@ -153,5 +178,78 @@
       <a-sky color="#ECECEC"></a-sky>
       
     </a-scene>
+
+    <!-- JavaScript for Keyboard Listener & Party Popper Confetti Effect -->
+    <script>
+      // Listen for 'C' or 'c' keypress
+      window.addEventListener('keydown', (event) => {
+        if (event.key.toLowerCase() === 'c') {
+          triggerPartyPopper();
+        }
+      });
+
+      // Birthday Party Popper Burst Generator
+      function triggerPartyPopper() {
+        const scene = document.querySelector('a-scene');
+        const origin = { x: 0, y: 1.6, z: 0 };
+        const colors = ['#FFD700', '#FF1493', '#00FFFF', '#FF4500', '#7CFC00', '#FF00FF', '#FFFF00', '#00FF7F'];
+        const particleCount = 85;
+
+        for (let i = 0; i < particleCount; i++) {
+          const confetti = document.createElement('a-plane');
+          
+          const w = 0.06 + Math.random() * 0.06;
+          const h = 0.09 + Math.random() * 0.08;
+          confetti.setAttribute('width', w);
+          confetti.setAttribute('height', h);
+          confetti.setAttribute('color', colors[Math.floor(Math.random() * colors.length)]);
+          confetti.setAttribute('side', 'double');
+          confetti.setAttribute('position', `${origin.x} ${origin.y} ${origin.z + 0.2}`);
+          
+          // Explosive velocity vectors
+          const vx = (Math.random() - 0.5) * 5.0;
+          const vy = Math.random() * 4.5 + 2.5; // Blast upward
+          const vz = (Math.random() - 0.5) * 3.5 + 1.0; // Blast forward toward camera
+          
+          confetti.setAttribute('rotation', `${Math.random()*360} ${Math.random()*360} ${Math.random()*360}`);
+
+          scene.appendChild(confetti);
+
+          // Physics loop for confetti animation
+          let posX = origin.x;
+          let posY = origin.y;
+          let posZ = origin.z + 0.2;
+          let curVy = vy;
+          const startTime = Date.now();
+          const duration = 2500;
+
+          const interval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            if (elapsed > duration) {
+              clearInterval(interval);
+              if (confetti.parentNode) {
+                confetti.parentNode.removeChild(confetti);
+              }
+              return;
+            }
+
+            const dt = 0.016;
+            posX += vx * dt;
+            curVy -= 5.5 * dt; // Gravity
+            posY += curVy * dt;
+            posZ += vz * dt;
+
+            confetti.setAttribute('position', `${posX} ${posY} ${posZ}`);
+            confetti.setAttribute('rotation', `${elapsed * 0.7} ${elapsed * 1.1} ${elapsed * 0.5}`);
+            
+            // Fade scale down near lifespan end
+            if (elapsed > duration - 600) {
+              const scale = (duration - elapsed) / 600;
+              confetti.setAttribute('scale', `${scale} ${scale} ${scale}`);
+            }
+          }, 16);
+        }
+      }
+    </script>
   </body>
 </html>
