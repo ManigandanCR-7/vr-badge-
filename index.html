@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Front-Facing Golden Star Badge with Party Popper</title>
+    <!-- A-Frame Library -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <style>
+      /* On-screen UI Banner & Controls */
+      #ui-overlay {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 999;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        text-align: center;
+        pointer-events: none;
+      }
+      .party-btn {
+        pointer-events: auto;
+        background: linear-gradient(135deg, #FFD700, #FF4500);
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 30px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        transition: transform 0.1s ease;
+      }
+      .party-btn:active {
+        transform: scale(0.95);
+      }
+      .hint-text {
+        color: #ffffff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        margin-top: 8px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- On-screen UI Banner -->
+    <div id="ui-overlay">
+      <button class="party-btn" onclick="triggerPartyPopper()">🎉 Press 'C' or Click for Party Popper!</button>
+      <div class="hint-text">Badge is positioned front-facing with 360° rotation</div>
+    </div>
+
+    <a-scene environment="preset: neutral">
+      <!-- Asset Management -->
+      <a-assets>
+        <img id="badge-image" src="https://picsum.photos/id/1025/400/400" crossorigin="anonymous" />
+      </a-assets>
+
+      <!-- Camera aligned directly front-facing -->
+      <a-entity position="0 1.5 3">
+        <a-camera look-controls allow-touch-drag></a-camera>
+      </a-entity>
+
+      <!-- Lighting -->
+      <a-light type="ambient" color="#FFF" intensity="0.7"></a-light>
+      <a-light type="directional" color="#FFE5B4" intensity="1.2" position="-2 4 3"></a-light>
+      <a-light type="directional" color="#FFFFFF" intensity="0.8" position="2 -1 2"></a-light>
+
+      <!-- ROTATING BADGE GROUP (Front Facing) -->
+      <a-entity 
+        id="golden-badge"
+        position="0 1.5 0" 
+        rotation="0 0 0"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear">
+        
+        <!-- Outer Gold Ring Rim -->
+        <a-torus 
+          radius="1.05" 
+          radius-tubular="0.08" 
+          color="#FFD700" 
+          metalness="0.9" 
+          roughness="0.2">
+        </a-torus>
+
+        <!-- Main Gold Disc Body -->
+        <a-cylinder 
+          radius="1.0" 
+          height="0.1" 
+          rotation="90 0 0" 
+          color="#FFD700" 
+          metalness="0.85" 
+          roughness="0.25">
+        </a-cylinder>
+
+        <!-- Inner Bezel Rings -->
+        <a-ring 
+          radius-inner="0.75" 
+          radius-outer="0.85" 
+          position="0 0 0.052" 
+          color="#D4AF37" 
+          metalness="0.9" 
+          roughness="0.2">
+        </a-ring>
+        <a-ring 
+          radius-inner="0.75" 
+          radius-outer="0.85" 
+          position="0 0 -0.052" 
+          rotation="0 180 0"
+          color="#D4AF37" 
+          metalness="0.9" 
+          roughness="0.2">
+        </a-ring>
+
+        <!-- Center Image (Front Face) -->
+        <a-circle 
+          radius="0.75" 
+          position="0 0 0.055" 
+          src="#badge-image">
+        </a-circle>
+
+        <!-- Center Image (Back Face) -->
+        <a-circle 
+          radius="0.75" 
+          position="0 0 -0.055" 
+          rotation="0 180 0" 
+          src="#badge-image">
+        </a-circle>
+
+        <!-- FRONT STAR ACCENTS -->
+        <a-tetrahedron radius="0.1" position="0 0.9 0.06" rotation="0 0 0" color="#FFF8DC" metalness="0.9" roughness="0.1"></a-tetrahedron>
+        <a-tetrahedron radius="0.1" position="0 -0.9 0.06" rotation="0 0 180" color="#FFF8DC" metalness="0.9" roughness="0.1"></a-tetrahedron>
+        <a-tetrahedron radius="0.1" position="-0.9 0 0.06" rotation="0 0 90" color="#FFF8DC" metalness="0.9" roughness="0.1"></a-tetrahedron>
+        <a-tetrahedron radius="0.1" position="0.9 0 0.06" rotation="0 0 -90" color="#FFF8DC" metalness="0.9" roughness="0.1"></a-tetrahedron>
+
+        <!-- BACK STAR ACCENTS -->
+        <a-tetrahedron radius="0.1" position="0 0.9 -0.06" rotation="0 180 0" color="#FFF8DC" metalness="0.9" roughness="0.1"></a-tetrahedron>
+        <a-tetrahedron radius="0.1" position="0 -0.9 -0.06" rotation="0 180 180" color="#FFF8DC" metalness="0.9" roughness="0.1"></a-tetrahedron>
+        <a-tetrahedron radius="0.1" position="-0.9 0 -0.06" rotation="0 180 90" color="#FFF8DC" metalness="0.9" roughness="0.1"></a-tetrahedron>
+        <a-tetrahedron radius="0.1" position="0.9 0 -0.06" rotation="0 180 -90" color="#FFF8DC" metalness="0.9" roughness="0.1"></a-tetrahedron>
+
+      </a-entity>
+    </a-scene>
+
+    <!-- JavaScript for Keyboard Listener & Birthday Party Popper Effect -->
+    <script>
+      // Listen for 'C' or 'c' keypress
+      window.addEventListener('keydown', (event) => {
+        if (event.key.toLowerCase() === 'c') {
+          triggerPartyPopper();
+        }
+      });
+
+      // Birthday Party Popper Confetti Generator
+      function triggerPartyPopper() {
+        const scene = document.querySelector('a-scene');
+        const badgeOrigin = { x: 0, y: 1.5, z: 0 };
+        const confettiColors = ['#FFD700', '#FF1493', '#00FFFF', '#FF4500', '#7CFC00', '#FF00FF', '#FFFF00', '#00FF7F'];
+        const numParticles = 75;
+
+        for (let i = 0; i < numParticles; i++) {
+          const confetti = document.createElement('a-plane');
+          
+          // Random shapes and sizes
+          const width = 0.04 + Math.random() * 0.04;
+          const height = 0.06 + Math.random() * 0.06;
+          confetti.setAttribute('width', width);
+          confetti.setAttribute('height', height);
+          confetti.setAttribute('color', confettiColors[Math.floor(Math.random() * confettiColors.length)]);
+          confetti.setAttribute('side', 'double');
+          confetti.setAttribute('position', `${badgeOrigin.x} ${badgeOrigin.y} ${badgeOrigin.z + 0.1}`);
+          
+          // Initial explosive trajectory velocities (upward & outward blast)
+          const vx = (Math.random() - 0.5) * 3.5;
+          const vy = Math.random() * 3.5 + 2.0; // Blast high up
+          const vz = (Math.random() - 0.5) * 2.5 + 0.5; // Blast forward toward camera
+          
+          confetti.setAttribute('rotation', `${Math.random()*360} ${Math.random()*360} ${Math.random()*360}`);
+
+          scene.appendChild(confetti);
+
+          // Physics animation loop for each confetti piece
+          let posX = badgeOrigin.x;
+          let posY = badgeOrigin.y;
+          let posZ = badgeOrigin.z + 0.1;
+          let curVy = vy;
+          const startTime = Date.now();
+          const duration = 2200; // milliseconds before disappearing
+
+          const interval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            if (elapsed > duration) {
+              clearInterval(interval);
+              if (confetti.parentNode) {
+                confetti.parentNode.removeChild(confetti);
+              }
+              return;
+            }
+
+            const dt = 0.016; // approx 60 FPS frame time
+            posX += vx * dt;
+            curVy -= 4.5 * dt; // Gravity pulling down
+            posY += curVy * dt;
+            posZ += vz * dt;
+
+            confetti.setAttribute('position', `${posX} ${posY} ${posZ}`);
+            confetti.setAttribute('rotation', `${elapsed * 0.6} ${elapsed * 0.9} ${elapsed * 0.4}`);
+            
+            // Fade out / scale down toward end of lifespan
+            if (elapsed > duration - 600) {
+              const scale = (duration - elapsed) / 600;
+              confetti.setAttribute('scale', `${scale} ${scale} ${scale}`);
+            }
+          }, 16);
+        }
+      }
+    </script>
+  </body>
+</html>
