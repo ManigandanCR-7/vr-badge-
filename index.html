@@ -2,8 +2,8 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Interactive 3D Medal - Center Screen with Mouse Rotation</title>
-    <meta name="description" content="A-Frame Interactive Golden Medal">
+    <title>Interactive 3D Medal - Scaled Up with Custom Lighting</title>
+    <meta name="description" content="A-Frame Interactive Golden Medal - Larger Size">
     
     <!-- Include A-Frame Library -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
@@ -31,7 +31,6 @@
         },
         OnMouseDown: function(event) {
           this.ifMouseDown = true;
-          // Handle both mouse and touch events
           this.x_cord = event.clientX || event.touches[0].clientX;
           this.y_cord = event.clientY || event.touches[0].clientY;
         },
@@ -40,23 +39,17 @@
         },
         OnMouseMove: function(event) {
           if (this.ifMouseDown) {
-            // Calculate movement delta
             const temp_x = event.clientX || event.touches[0].clientX;
             const temp_y = event.clientY || event.touches[0].clientY;
             
             const deltaX = temp_x - this.x_cord;
             const deltaY = temp_y - this.y_cord;
             
-            // Update stored coordinates
             this.x_cord = temp_x;
             this.y_cord = temp_y;
             
-            // Get current rotation
             const rotation = this.el.getAttribute('rotation');
             
-            // Apply new rotation based on mouse movement and speed sensitivity
-            // Dragging left/right affects Y-axis rotation
-            // Dragging up/down affects X-axis rotation
             this.el.setAttribute('rotation', {
               x: rotation.x - deltaY * this.data.speed,
               y: rotation.y + deltaX * this.data.speed,
@@ -68,7 +61,6 @@
     </script>
     
     <style>
-      /* Simple CSS to add instructions overlay */
       #instructions {
         position: absolute;
         bottom: 20px;
@@ -80,108 +72,79 @@
         color: white;
         padding: 10px 20px;
         border-radius: 20px;
-        pointer-events: none; /* Let clicks pass through to the canvas */
+        pointer-events: none;
         text-align: center;
       }
     </style>
   </head>
   <body>
     
-    <!-- HTML Overlay for User Instructions -->
     <div id="instructions">
       Click and Drag to Rotate the Medal
     </div>
 
-    <!-- 
-      A-Frame Scene 
-      We set an environment map for realistic metallic reflections. 
-    -->
     <a-scene environment="preset: contact; lighting: none; shadow: false;">
       
       <!-- Asset Management -->
       <a-assets>
-        <!-- A simple star image for the center of the medal -->
         <img id="star-icon" src="https://cdn.glitch.global/206f632d-cf41-477d-9477-7422b404d59a/star.png?v=1675862657805" crossorigin="anonymous">
       </a-assets>
 
-      <!-- 
-        Lighting setup specifically for metallic objects.
-        Need strong directional lights to create bright highlights.
-      -->
-      <a-light type="ambient" color="#BBB"></a-light>
-      <a-light type="directional" color="#FFF" intensity="0.8" position="-1 1 1"></a-light>
-      <a-light type="directional" color="#FFF" intensity="0.8" position="1 1 1"></a-light>
-      <a-light type="directional" color="#FFD700" intensity="0.5" position="0 -1 0"></a-light> <!-- Gold underlight -->
+      <!-- LIGHTING SETUP -->
+      <!-- Base Ambient Light -->
+      <a-light type="ambient" color="#FFF" intensity="0.4"></a-light>
+      
+      <!-- Top White Light -->
+      <a-light type="directional" color="#FFFFFF" intensity="1.5" position="0 5 1"></a-light>
+      
+      <!-- Front White Light (positioned with camera view facing medal front) -->
+      <a-light type="directional" color="#FFFFFF" intensity="1.2" position="0 1.6 3"></a-light>
+      
+      <!-- Fill light for golden glow -->
+      <a-light type="directional" color="#FFD700" intensity="0.5" position="-2 -1 1"></a-light>
 
-      <!-- 
-        Camera 
-        Look-controls disabled so the mouse drag rotates the object, not the view.
-      -->
-      <a-entity position="0 1.6 3">
+      <!-- Camera centered on target object position -->
+      <a-entity position="0 1.6 3.5">
         <a-camera look-controls="enabled: false" wasd-controls="enabled: false"></a-camera>
       </a-entity>
 
       <!-- 
         INTERACTIVE MEDAL GROUP
-        Centered in screen (Y=1.6), has the custom 'mouse-rotate' component applied.
+        Scaled up to 1.5x size for high visibility
       -->
-      <a-entity id="medal-group" position="0 1.6 0" mouse-rotate="speed: 0.5">
+      <a-entity id="medal-group" position="0 1.6 0" scale="1.5 1.5 1.5" mouse-rotate="speed: 0.5">
         
         <!-- THE RIBBON -->
-        <!-- Blue V-shape top -->
         <a-mixin id="ribbon-mat" material="color: #153a7a; roughness: 0.8; metalness: 0; side: double"></a-mixin>
-        <a-triangle mixin="ribbon-mat" vertex-a="0 0.7 0" vertex-b="-0.3 1.2 0" vertex-c="0.3 1.2 0" position="0 0 0"></a-triangle>
-        <!-- Yellow stripe center -->
-        <a-plane material="color: #f5c936; roughness: 0.8; metalness: 0" width="0.1" height="0.52" position="0 0.95 0.001"></a-plane>
+        <a-triangle mixin="ribbon-mat" vertex-a="0 0.7 0" vertex-b="-0.35 1.25 0" vertex-c="0.35 1.25 0" position="0 0 0"></a-triangle>
+        <a-plane material="color: #f5c936; roughness: 0.8; metalness: 0" width="0.12" height="0.55" position="0 0.97 0.001"></a-plane>
 
-        <!-- THE MEDAL BODY (Gold) -->
-        <!-- Main thick cylinder -->
+        <!-- THE MEDAL BODY (Gold Disc) -->
         <a-cylinder 
           id="medal-disc"
-          geometry="radius: 0.5; height: 0.08;"
+          geometry="radius: 0.65; height: 0.1;"
           rotation="90 0 0" 
-          material="color: #FFD700; metalness: 0.9; roughness: 0.1; envMap: #env;"
-          position="0 0.3 0">
+          material="color: #FFD700; metalness: 0.9; roughness: 0.15;"
+          position="0 0.25 0">
         </a-cylinder>
-        
-        <!-- Raised Outer Rim (Torus) -->
-        <a-torus 
-          geometry="radius: 0.47; radius-tubular: 0.015;"
-          rotation="90 0 0"
-          material="color: #DAA520; metalness: 1; roughness: 0.1;"
-          position="0 0.3 0.045">
-        </a-torus>
-        <a-torus 
-          geometry="radius: 0.47; radius-tubular: 0.015;"
-          rotation="90 0 0"
-          material="color: #DAA520; metalness: 1; roughness: 0.1;"
-          position="0 0.3 -0.045">
-        </a-torus>
-
-        <!-- Inner Bezel Ring -->
-        <a-ring 
-          geometry="radius-inner: 0.35; radius-outer: 0.38;"
-          material="color: #B8860B; metalness: 1; roughness: 0.2;"
-          position="0 0.3 0.041">
-        </a-ring>
 
         <!-- Center Icon (Star) -->
         <a-circle 
-          geometry="radius: 0.25;"
+          geometry="radius: 0.38;"
           material="src: #star-icon; transparent: true; color: #DAA520; metalness: 0.8; roughness: 0.2;"
-          position="0 0.3 0.042">
+          position="0 0.25 0.052">
         </a-circle>
         
         <!-- Text on Medal -->
-        <a-text value="AWARD" color="#5c440a" align="center" width="1.5" position="0 0.6 0.041" font="exo2bold"></a-text>
-        <a-text value="Nº 1" color="#5c440a" align="center" width="2" position="0 0.15 0.041" font="exo2bold"></a-text>
+        <a-text value="AWARD" color="#5c440a" align="center" width="2.0" position="0 0.52 0.052" font="exo2bold"></a-text>
+        <a-text value="Nº 1" color="#5c440a" align="center" width="2.5" position="0 0.02 0.052" font="exo2bold"></a-text>
 
         <!-- Connector Loop -->
         <a-torus 
-          geometry="radius: 0.08; radius-tubular: 0.01;"
+          geometry="radius: 0.1; radius-tubular: 0.015;"
           rotation="0 90 0"
           material="color: #DAA520; metalness: 1; roughness: 0.1;"
-          position="0 0.78 0">
+          position="0 0.88 0">
         </a-torus>
         
       </a-entity>
